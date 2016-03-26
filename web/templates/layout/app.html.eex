@@ -33,5 +33,6 @@
 
     </div> <!-- /container -->
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script>require("web/static/js/app").Basedef.run()</script>
   </body>
 </html>

@@ -25,3 +25,19 @@ body {
   background-size: 519px 71px;
 }
 
+#share-url {
+  background-color: white;
+}
+
+#board th:first-child {
+  vertical-align: middle;
+  text-align: center;
+}
+
+#board th:not(:first-child) {
+  width: 8em;
+}
+
+#board th:not(:first-child)::first-letter {
+  font-size: 5em;
+}
