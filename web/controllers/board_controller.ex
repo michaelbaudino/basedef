@@ -1,4 +1,4 @@
-defmodule Basedef.PageController do
+defmodule Basedef.BoardController do
   use Basedef.Web, :controller
 
   def index(conn, _params) do
