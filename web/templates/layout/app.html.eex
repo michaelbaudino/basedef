@@ -9,6 +9,8 @@
 
     <title>BASEDEF contribution matrices</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300">
   </head>
 
   <body>
@@ -16,7 +18,7 @@
       <header class="header">
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
+            <li><a href="<%= static_path(@conn, "/") %>">BASEDEF</a></li>
           </ul>
         </nav>
         <span class="logo"></span>
