@@ -19,10 +19,13 @@ import Clipboard from "clipboard"
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-// import socket from "./socket"
+import channel from "./socket"
+
+import Board from "./board"
 
 export var Basedef = {
   run: function(){
     new Clipboard("#share-url-btn")
+    let board = new Board("#board", channel)
   }
 }

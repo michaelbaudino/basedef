@@ -41,3 +41,8 @@ body {
 #board th:not(:first-child)::first-letter {
   font-size: 5em;
 }
+
+#board .add-project-row {
+  border-style: hidden;
+  border-top-style: inherit;
+}
