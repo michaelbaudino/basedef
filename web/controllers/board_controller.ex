@@ -10,4 +10,8 @@ defmodule Basedef.BoardController do
     |> assign(:board_id, id)
     |> render("show.html")
   end
+
+  def create(conn, %{"id" => id}) do
+    redirect conn, to: board_path(conn, :show, id)
+  end
 end

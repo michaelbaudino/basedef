@@ -29,4 +29,5 @@ config :phoenix, :generators,
   binary_id: false
 
 config :phoenix, :template_engines,
-  haml: PhoenixHaml.Engine
+  slim:  PhoenixSlime.Engine,
+  slime: PhoenixSlime.Engine

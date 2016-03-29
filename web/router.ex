@@ -18,5 +18,6 @@ defmodule Basedef.Router do
 
     get "/", BoardController, :index
     get "/:id", BoardController, :show
+    post "/", BoardController, :create
   end
 end

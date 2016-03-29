@@ -1,0 +1,12 @@
+.jumbotron.text-center
+  h1 BASEDEF Contribution Matrices
+  p.lead Online, Real-Time, Collaborative
+
+  .row
+    = form_for @conn, board_url(@conn, :create), [as: "board", class: "input-group has-success col-xs-8 col-xs-offset-2"], fn f ->
+      span.input-group-addon= board_url(@conn, :index)
+      input.form-control type="text" name="id" value=haikunator
+      span.input-group-btn
+        button.btn.btn-success type="submit"
+          i.fa.fa-plus
+          | &nbsp;Generate a new matrix
