@@ -1,0 +1,31 @@
+doctype html
+html lang="en"
+  head
+    meta charset="utf-8"
+    meta http-equiv="X-UA-Compatible" content="IE=edge"
+    meta name="viewport"    content="width=device-width, initial-scale=1"
+    meta name="description" content="BASEDEF online collaborative contribution matrices for 20% work decision-making"
+    meta name="author"      content="Michael Baudino"
+
+    title BASEDEF contribution matrices
+
+    link rel="stylesheet" href="#{static_path(@conn, "/css/app.css")}"
+    link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+    link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300"
+
+  body
+    .container
+      header.header
+        nav role="navigation"
+          ul.nav.nav-pills.pull-right
+            li
+              a href="#{static_path(@conn, "/")}" BASEDEF
+        span.logo
+
+      p.alert.alert-info role="alert" = get_flash(@conn, :info)
+      p.alert.alert-danger role="alert" = get_flash(@conn, :error)
+
+      main role="main"
+        = render @view_module, @view_template, assigns
+
+    script src="#{static_path(@conn, "/js/app.js")}"
