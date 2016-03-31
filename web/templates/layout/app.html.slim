@@ -11,21 +11,39 @@ html lang="en"
 
     link rel="stylesheet" href="#{static_path(@conn, "/css/app.css")}"
     link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
-    link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300"
 
   body
-    .container
-      header.header
-        nav role="navigation"
-          ul.nav.nav-pills.pull-right
-            li
-              a href="#{static_path(@conn, "/")}" BASEDEF
-        span.logo
+    #body-wrapper
+      .container
+        header.header
+          a.sitename href="#{static_path(@conn, "/")}"
+            | BASEDEF
+            span.extension .io
 
-      p.alert.alert-info role="alert" = get_flash(@conn, :info)
-      p.alert.alert-danger role="alert" = get_flash(@conn, :error)
+        p.alert.alert-info role="alert" = get_flash(@conn, :info)
+        p.alert.alert-danger role="alert" = get_flash(@conn, :error)
 
-      main role="main"
-        = render @view_module, @view_template, assigns
+        main role="main"
+          = render @view_module, @view_template, assigns
+
+    footer.footer
+      .container
+        .row
+          .col-xs-6
+            p Developed by&nbsp;
+            p
+              a href="http://www.alpine-lab.com"
+                img.logo-alpinelab src="#{static_path(@conn, "/images/alpinelab-horizontal.png")}" alt="Alpine Lab"
+          .col-xs-3
+            p Icon design by&nbsp;
+            p
+              a href="http://www.manuelalangella.com"
+                img.logo-manuela src="#{static_path(@conn, "/images/logo-mlangella.png")}" alt="Manuela Langella"
+          .col-xs-3
+            p
+              | Open source
+            p
+              a href="https://github.com/michaelbaudino/basedef"
+                i.fa.fa-github
 
     script src="#{static_path(@conn, "/js/app.js")}"

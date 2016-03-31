@@ -1,12 +1,35 @@
 .jumbotron.text-center
-  h1 BASEDEF Contribution Matrices
-  p.lead Online, Real-Time, Collaborative
+  p.lead online, realtime, collaborative
+  h1 Contribution Matrix
+  p.lead
+    | to organize your&nbsp;
+    a href="http://begriffs.com/posts/2016-01-29-making-twenty-percent-time-work.html" 20% work
 
-  .row
-    = form_for @conn, board_url(@conn, :create), [as: "board", class: "input-group has-success col-xs-8 col-xs-offset-2"], fn f ->
+  .board-submission.row
+    = form_for @conn, board_url(@conn, :create), [as: "board", class: "input-group col-xs-8 col-xs-offset-2"], fn f ->
       span.input-group-addon= board_url(@conn, :index)
       input.form-control type="text" name="id" value=haikunator
       span.input-group-btn
         button.btn.btn-success type="submit"
           i.fa.fa-plus
           | &nbsp;Generate a new matrix
+
+#rules.row
+  .col-xs-4
+    img src="#{static_path(@conn, "/images/pick_tasks.svg")}" alt="Interesting tasks"
+    .caption
+      h3 Define your interests
+      p Each participant defines 3 tasks he'd like to work on today from the project list.
+      p Anyone can propose additional projects.
+  .col-xs-4
+    img src="#{static_path(@conn, "/images/most_popular.svg")}" alt="Most popular project"
+    .caption
+      h3 Choose a project
+      p The team collaboratively narrows down the choice to the most popular project.
+      p Each participant self-assigns one of the project tasks.
+  .col-xs-4
+    img src="#{static_path(@conn, "/images/get_things_done.svg")}" alt=""
+    .caption
+      h3 Get stuff done
+      p You've got the rest of the day to contribute efficiently to your beloved OSS or side projects.
+      p Skill-up as a team and expect some love back.

@@ -20,6 +20,7 @@ class Board
 
   addProjectRow: (newProjectName) ->
     newProjectRow = @elem.insertRow(this.elem.rows.length - 1)
-    newProjectRow.innerHTML = "<td>#{newProjectName}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>"
+    newProjectRow.innerHTML = "<td>#{newProjectName}</td>"
+    newProjectRow.innerHTML += "<td class=\"cell\"></td>" for i in [0..6]
 
 module.exports = Board
