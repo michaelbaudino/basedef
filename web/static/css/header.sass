@@ -1,0 +1,27 @@
+.header
+  margin-bottom: 50px
+
+  a.sitename
+    font-size: 4em
+    height: 100%
+    display: inline-block
+    color: #2c3e50
+    vertical-align: middle
+    font-weight: bold
+
+    &, &:hover, &:focus, &:active
+      text-decoration: none
+
+    .extension
+      color: #149c82
+      font-size: 32px
+
+    &::before
+      content: ""
+      width: 120px
+      height: 120px
+      display: inline-block
+      background-image: url("/images/basedef-logo.svg")
+      background-size: 120px 120px
+      vertical-align: middle
+      margin-right: 10px

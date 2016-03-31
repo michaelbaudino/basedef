@@ -13,18 +13,17 @@ html lang="en"
     link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
 
   body
-    #body-wrapper
-      .container
-        header.header
-          a.sitename href="#{static_path(@conn, "/")}"
-            | BASEDEF
-            span.extension .io
+    #body-wrapper.container
+      header.header
+        a.sitename href="#{static_path(@conn, "/")}"
+          | BASEDEF
+          span.extension .io
 
-        p.alert.alert-info role="alert" = get_flash(@conn, :info)
-        p.alert.alert-danger role="alert" = get_flash(@conn, :error)
+      p.alert.alert-info role="alert" = get_flash(@conn, :info)
+      p.alert.alert-danger role="alert" = get_flash(@conn, :error)
 
-        main role="main"
-          = render @view_module, @view_template, assigns
+      main role="main"
+        = render @view_module, @view_template, assigns
 
     footer.footer
       .container
