@@ -17,7 +17,7 @@ html lang="en"
       header.header
         a.sitename href="#{static_path(@conn, "/")}"
           | BASEDEF
-          span.extension .io
+          span.extension .org
 
       p.alert.alert-info role="alert" = get_flash(@conn, :info)
       p.alert.alert-danger role="alert" = get_flash(@conn, :error)
