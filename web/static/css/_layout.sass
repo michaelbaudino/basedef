@@ -1,0 +1,24 @@
+body
+  background-image: url("/images/p6.png")
+
+::selection
+  background-color: $flat-green
+  color: $flat-white
+
+::-moz-selection
+  background-color: $flat-green
+  color: $flat-white
+
+a, a i
+  color: $flat-green-light
+  transition: color 0.25s ease
+  &:hover
+    color: $flat-green
+    text-decoration: none
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+  body
+    background-image: url("/images/p6_@2X.png")
+
+.alert:empty
+  display: none
