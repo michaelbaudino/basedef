@@ -3,14 +3,14 @@
     p
       .input-group
         span.input-group-addon This board public URL:
-        input#share-url.form-control type="text" value="#{board_url(@conn, :show, @board_id)}" readonly=true
+        input#share-url.form-control type="text" value="#{board_url(@conn, :show, @board.name)}" readonly=true
         span.input-group-btn
           button#share-url-btn.btn.btn-default type="button" data-clipboard-target="#share-url"
             i.fa.fa-clipboard
 
 .row
   .col-xs-12
-    table#board.table.table-bordered data-board-id=@board_id
+    table#board.table.table-bordered data-board-id=@board.name
       thead
         tr
           th
@@ -22,13 +22,26 @@
           th Evangelize
           th Fix
       tbody
+        = for project <- @board.projects do
+          tr
+            td = project.name
+            td.cell
+            td.cell
+            td.cell
+            td.cell
+            td.cell
+            td.cell
+            td.cell
         tr.new-project-row
           td colspan="8"
-            form.input-group.col-xs-3
-              input.form-control type="text" placeholder="New project name"
-              span.input-group-btn
-                button.btn.btn-success type="submit"
-                  i.fa.fa-plus
+            form
+              .form-group
+                .input-group.col-xs-4
+                  input.form-control type="text" placeholder="New project name"
+                  span.input-group-btn
+                    button.btn.btn-success type="submit"
+                      i.fa.fa-plus
+                span.help-block
 
 .row
   .col-xs-12

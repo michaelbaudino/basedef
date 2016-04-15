@@ -1,9 +1,4 @@
 #board
-  // All rows except the last one (that must not seem to be a row)
-  tr:not(.new-project-row)
-    background: white
-    height: 100px
-
   // Column headers
   th:not(:first-child)
     width: 8em
@@ -11,13 +6,18 @@
     &::first-letter
       font-size: 4em
 
-  // Row headers
-  td:first-child
-    font-size: 1.2em
-    font-weight: bold
-    text-align: center
-    vertical-align: middle
-    color: $flat-green
+  // All rows except the last one (that must not seem to be a row)
+  tr:not(.new-project-row)
+    background: white
+    height: 100px
+
+    // Row headers
+    td:first-child
+      font-size: 1.2em
+      font-weight: bold
+      text-align: center
+      vertical-align: middle
+      color: $flat-green
 
   // Last row (that does not seem to be a row)
   tr.new-project-row

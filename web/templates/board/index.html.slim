@@ -6,9 +6,9 @@
     a< href="http://begriffs.com/posts/2016-01-29-making-twenty-percent-time-work.html" 20% work
 
   .board-submission.row
-    = form_for @conn, board_url(@conn, :create), [as: "board", class: "input-group col-xs-8 col-xs-offset-2"], fn f ->
+    = form_for @changeset, board_url(@conn, :create), [class: "input-group col-xs-8 col-xs-offset-2"], fn f ->
       span.input-group-addon= board_url(@conn, :index)
-      input.form-control type="text" name="id" value=haikunator
+      = text_input f, :name, [class: "form-control", value: haikunator]
       span.input-group-btn
         button.btn.btn-success type="submit"
           i.fa.fa-plus>

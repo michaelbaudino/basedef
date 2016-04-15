@@ -17,7 +17,7 @@ defmodule Basedef.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", BoardController, :index
-    get "/:id", BoardController, :show
+    get "/:name", BoardController, :show
     post "/", BoardController, :create
   end
 end

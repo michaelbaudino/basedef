@@ -12,11 +12,24 @@ class Board
       @addProjectRow(payload.name)
 
   submitProject: ->
+    @clearErrors()
     newProjectInput = @elem.querySelector(".new-project-row input")
     newProjectName  = newProjectInput.value
-    if newProjectName
-      @channel.push "new_project", {name: newProjectName}
-      newProjectInput.value = ""
+    @channel.push "create_project", {name: newProjectName}
+      .receive "error", (errors) =>
+        @displayErrors(errors)
+    newProjectInput.value = ""
+
+  displayErrors: (errors) ->
+    @elem.querySelector(".new-project-row .form-group").classList.add("has-error")
+    human_errors = for field, reason of errors
+      field = "name" if field == "name_board_id"
+      "Project #{field} #{reason}"
+    @elem.querySelector(".new-project-row .help-block").innerText = human_errors.join(", ")
+
+  clearErrors: ->
+    @elem.querySelector(".new-project-row .help-block").innerText = ""
+    @elem.querySelector(".new-project-row .form-group").classList.remove("has-error")
 
   addProjectRow: (newProjectName) ->
     newProjectRow = @elem.insertRow(this.elem.rows.length - 1)
