@@ -13,14 +13,22 @@
 // to also remove its path from "config.paths.watched".
 import "phoenix_html"
 import Clipboard from "clipboard"
+import React     from "react"
+import ReactDOM  from "react-dom"
 
 // Import local files
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-import channel from "./socket"
-import Board   from "./board"
+import channel      from "./socket"
+import Board        from "./board"
+import HelloMessage from "./hello_message"
 
 new Clipboard("#share-url-btn")
 new Board("#board", channel)
+
+ReactDOM.render(
+  <HelloMessage recipient="Mike" />,
+  document.getElementById("react-placeholder")
+)
