@@ -1,5 +1,6 @@
 defmodule Basedef.BoardChannel do
   use Phoenix.Channel
+  import Ecto.Query
 
   alias Basedef.Repo
   alias Basedef.Board
@@ -10,8 +11,8 @@ defmodule Basedef.BoardChannel do
   end
 
   def handle_in("create_project", %{"name" => name}, socket) do
-    "boards:" <> board_name = socket.topic
-    board = Repo.get_by!(Board, name: board_name)
+    "boards:" <> board_id = socket.topic
+    board = Repo.get(Board, board_id)
     changeset = Project.changeset(%Project{}, %{name: name, board_id: board.id})
     case Repo.insert(changeset) do
       {:ok, project} ->
@@ -21,6 +22,12 @@ defmodule Basedef.BoardChannel do
         errors = changeset.errors |> Enum.map(&extrapolate_error_message/1) |> Enum.into(%{})
         {:reply, {:error, errors}, socket}
     end
+  end
+
+  def handle_in("list_projects", %{}, socket) do
+    "boards:" <> board_id = socket.topic
+    projects = Project |> where([p], p.board_id == ^board_id) |> select([p], %{id: p.id, name: p.name}) |> order_by([p], p.inserted_at) |> Repo.all
+    {:reply, {:ok, %{projects: projects}}, socket}
   end
 
   intercept ["new_project"]

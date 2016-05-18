@@ -20,15 +20,16 @@ import ReactDOM  from "react-dom"
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
+import Board from "./components/Board"
 
-import channel      from "./socket"
-import Board        from "./board"
-import HelloMessage from "./hello_message"
-
+// Initialize clipboard
 new Clipboard("#share-url-btn")
-new Board("#board", channel)
 
-ReactDOM.render(
-  <HelloMessage recipient="Mike" />,
-  document.getElementById("react-placeholder")
-)
+// Initialize board component
+let boardPlaceholder = document.getElementById("react-board")
+if (boardPlaceholder) {
+  ReactDOM.render(
+    <Board id={boardPlaceholder.getAttribute("data-board-id")} />,
+    boardPlaceholder
+  )
+}

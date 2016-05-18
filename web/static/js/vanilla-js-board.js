@@ -1,3 +1,6 @@
+// UNUSED, WILL BE REMOVED AS SOON AS IT HAS COMPLETELY BEEN
+// REIMPLEMENTED WITH REACT
+
 export default class Board {
   constructor(selector, channel) {
     this.channel = channel

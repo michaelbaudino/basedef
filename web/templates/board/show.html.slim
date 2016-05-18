@@ -10,38 +10,7 @@
 
 .row
   .col-xs-12
-    table#board.table.table-bordered data-board-id=@board.name
-      thead
-        tr
-          th
-          th Blog
-          th Apply
-          th Suggest
-          th Extend
-          th Document
-          th Evangelize
-          th Fix
-      tbody
-        = for project <- @board.projects do
-          tr
-            td = project.name
-            td.cell
-            td.cell
-            td.cell
-            td.cell
-            td.cell
-            td.cell
-            td.cell
-        tr.new-project-row
-          td colspan="8"
-            form
-              .form-group
-                .input-group.col-xs-4
-                  input.form-control type="text" placeholder="New project name"
-                  span.input-group-btn
-                    button.btn.btn-success type="submit"
-                      i.fa.fa-plus
-                span.help-block
+    #react-board data-board-id=@board.id
 
 .row
   .col-xs-12
@@ -49,8 +18,3 @@
       .well
         span> For rules and methodology, please refer to
         a href="http://begriffs.com/posts/2016-01-29-making-twenty-percent-time-work.html" = "Joe Nelson's original blogpost"
-
-.row
-  .col-xs-12
-    p
-      #react-placeholder.well
