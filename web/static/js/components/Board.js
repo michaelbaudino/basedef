@@ -53,10 +53,12 @@ var Board = React.createClass({
         this.state.channel.on("project_added", payload => {
           this.state.projects[payload.id] = {"name": payload.name}
           this.setState({"projects": this.state.projects})
+          console.log("Project added", payload)
         })
         this.state.channel.on("project_deleted", payload => {
           delete this.state.projects[payload.id]
           this.setState({"projects": this.state.projects})
+          console.log("Project deleted", payload)
         })
       }
     )
