@@ -1,18 +1,16 @@
 #board
-  // Column headers
-  th:not(:first-child)
+  th:not(:first-child) // Column headers
     width: 8em
     font-weight: normal
     &::first-letter
       font-size: 4em
 
-  // All rows except the last one (that must not seem to be a row)
   tr:not(.new-project-row)
     background: white
     height: 100px
 
-    // Row headers
-    td:first-child
+  .project
+    th // Row headers
       font-size: 1.2em
       font-weight: bold
       text-align: left
@@ -20,21 +18,18 @@
       vertical-align: middle
       color: $flat-green
 
-  // Last row (that does not seem to be a row)
+      .delete-project
+        float: right
+        cursor: pointer
+        color: transparent
+        transition: color ease-out 0.7s
+      &:hover .delete-project
+        color: rgba($flat-red, 0.4)
+
   tr.new-project-row
     border-style: hidden
     border-top-style: inherit
 
-  tr.project
-    .delete-project
-      float: right
-      cursor: pointer
-      color: transparent
-      transition: color ease-out 0.7s
-    &:hover .delete-project
-      color: rgba($flat-red, 0.4)
-
-  // Actual table content
   .cell:hover
     background-color: $flat-gray-light
 

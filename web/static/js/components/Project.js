@@ -9,10 +9,10 @@ var Project = React.createClass({
   render: function() {
     return(
       <tr className="project">
-        <td>
+        <th>
           {this.props.name}
           <span className="delete-project" onClick={this.deleteProject}>&times;</span>
-        </td>
+        </th>
         <Cell />
         <Cell />
         <Cell />
