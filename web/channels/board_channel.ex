@@ -16,7 +16,20 @@ defmodule Basedef.BoardChannel do
     changeset = Project.changeset(%Project{}, %{name: name, board_id: board.id})
     case Repo.insert(changeset) do
       {:ok, project} ->
-        broadcast! socket, "new_project", %{name: project.name}
+        broadcast! socket, "project_added", %{id: project.id}
+        {:noreply, socket}
+      {:error, changeset} ->
+        errors = changeset.errors |> Enum.map(&extrapolate_error_message/1) |> Enum.into(%{})
+        {:reply, {:error, errors}, socket}
+    end
+  end
+
+  def handle_in("delete_project", %{"name" => name}, socket) do
+    "boards:" <> board_id = socket.topic
+    project = Repo.get_by(Project, %{board_id: board_id, name: name})
+    case Repo.delete(project) do
+      {:ok, model} ->
+        broadcast! socket, "project_deleted", %{id: project.id}
         {:noreply, socket}
       {:error, changeset} ->
         errors = changeset.errors |> Enum.map(&extrapolate_error_message/1) |> Enum.into(%{})
@@ -30,10 +43,10 @@ defmodule Basedef.BoardChannel do
     {:reply, {:ok, %{projects: projects}}, socket}
   end
 
-  intercept ["new_project"]
+  intercept ["project_added"]
 
-  def handle_out("new_project", %{name: name}, socket) do
-    push socket, "new_project", %{name: name |> Phoenix.HTML.html_escape |> Phoenix.HTML.safe_to_string}
+  def handle_out("project_added", %{name: name}, socket) do
+    push socket, "project_added", %{name: name |> Phoenix.HTML.html_escape |> Phoenix.HTML.safe_to_string}
     {:noreply, socket}
   end
 

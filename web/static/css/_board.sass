@@ -15,7 +15,8 @@
     td:first-child
       font-size: 1.2em
       font-weight: bold
-      text-align: center
+      text-align: left
+      padding: 0 2em
       vertical-align: middle
       color: $flat-green
 
@@ -23,6 +24,15 @@
   tr.new-project-row
     border-style: hidden
     border-top-style: inherit
+
+  tr.project
+    .delete-project
+      float: right
+      cursor: pointer
+      color: transparent
+      transition: color ease-out 0.7s
+    &:hover .delete-project
+      color: rgba($flat-red, 0.4)
 
   // Actual table content
   .cell:hover

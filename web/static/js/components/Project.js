@@ -2,10 +2,17 @@ import React from "react"
 import Cell  from "./Cell"
 
 var Project = React.createClass({
+  deleteProject: function(event) {
+    event.preventDefault();
+    this.props.deleteProject(this.props.name);
+  },
   render: function() {
     return(
-      <tr>
-        <td>{this.props.name}</td>
+      <tr className="project">
+        <td>
+          {this.props.name}
+          <span className="delete-project" onClick={this.deleteProject}>&times;</span>
+        </td>
         <Cell />
         <Cell />
         <Cell />

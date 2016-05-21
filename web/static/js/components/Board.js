@@ -10,10 +10,6 @@ import {Socket} from "phoenix"
 //   * error management at project creation
 
 var Board = React.createClass({
-  addProject: function(name) {
-    this.state.channel.push("create_project", {name: name})
-      .receive("error", errors => { this.displayErrors(errors) })
-  },
   getInitialState: function() {
     return {
       projects: {},
@@ -34,6 +30,14 @@ var Board = React.createClass({
         console.log("Projects loaded successfully", reply)
       })
   },
+  addProject: function(name) {
+    this.state.channel.push("create_project", {name: name})
+      .receive("error", errors => { this.displayErrors(errors) })
+  },
+  deleteProject: function(name) {
+    this.state.channel.push("delete_project", {name: name})
+      .receive("error", errors => { this.displayErrors(errors) })
+  },
   componentDidMount: function() {
     this.state.socket.connect()
     this.setState(
@@ -46,15 +50,20 @@ var Board = React.createClass({
             this.getProjects()
           })
 
-        this.state.channel.on("new_project", payload => {
-          this.state.projects[payload.name] = {"name": payload.name}
+        this.state.channel.on("project_added", payload => {
+          this.state.projects[payload.id] = {"name": payload.name}
+          this.setState({"projects": this.state.projects})
+        })
+        this.state.channel.on("project_deleted", payload => {
+          console.log("DEBUG: deleting " + payload.id)
+          delete this.state.projects[payload.id]
           this.setState({"projects": this.state.projects})
         })
       }
     )
   },
   renderProject: function(id) {
-    return(<Project key={id} name={this.state.projects[id].name} />)
+    return(<Project key={id} name={this.state.projects[id].name} deleteProject={this.deleteProject} />)
   },
   render: function() {
     return(
