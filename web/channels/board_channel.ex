@@ -16,7 +16,7 @@ defmodule Basedef.BoardChannel do
     changeset = Project.changeset(%Project{}, %{name: name, board_id: board.id})
     case Repo.insert(changeset) do
       {:ok, project} ->
-        broadcast! socket, "project_added", %{id: project.id}
+        broadcast! socket, "project_added", %{id: project.id, name: project.name}
         {:noreply, socket}
       {:error, changeset} ->
         errors = changeset.errors |> Enum.map(&extrapolate_error_message/1) |> Enum.into(%{})
@@ -45,8 +45,8 @@ defmodule Basedef.BoardChannel do
 
   intercept ["project_added"]
 
-  def handle_out("project_added", %{name: name}, socket) do
-    push socket, "project_added", %{name: name |> Phoenix.HTML.html_escape |> Phoenix.HTML.safe_to_string}
+  def handle_out("project_added", %{id: id, name: name}, socket) do
+    push socket, "project_added", %{id: id, name: name |> Phoenix.HTML.html_escape |> Phoenix.HTML.safe_to_string}
     {:noreply, socket}
   end
 
