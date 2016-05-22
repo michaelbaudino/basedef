@@ -23,8 +23,11 @@
         cursor: pointer
         color: transparent
         transition: color ease-out 0.7s
-      &:hover .delete-project
-        color: rgba($flat-red, 0.4)
+      &:hover
+        .delete-project
+          color: rgba($flat-red, 0.4)
+          &:hover
+            color: $flat-red
 
   tr.new-project-row
     border-style: hidden
