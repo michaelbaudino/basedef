@@ -7,12 +7,15 @@ module.exports = {
   devtool: "inline-source-map",
   module: {
     loaders: [{
-      test: /\.js$/,
+      test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: "babel",
       query: {
         presets: ["es2015", "react"]
       }
     }]
+  },
+  resolve: {
+    extensions: ["", ".js", ".jsx", ".es6"]
   }
 }
