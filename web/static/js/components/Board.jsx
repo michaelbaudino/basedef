@@ -2,12 +2,14 @@ import React      from "react"
 import Header     from "./Header"
 import Project    from "./Project"
 import NewProject from "./NewProject"
+import Auth       from "./Auth"
 
 import {Socket} from "phoenix"
 
 var Board = React.createClass({
   getInitialState: function() {
     return {
+      user:     null,
       projects: {},
       errors:   {},
       socket:   new Socket("/socket", {params: {token: window.userToken}}),
@@ -42,6 +44,11 @@ var Board = React.createClass({
   deleteProject: function(name) {
     this.state.channel.push("delete_project", {name: name})
       .receive("error", errors => { this.displayErrors(errors) })
+  },
+  loginAs: function(name) {
+    console.log("Logged in as " + name)
+    this.state.user = {name: name}
+    this.setState({user: this.state.user})
   },
   parseErrors: function(errors) {
     let human_errors = new Array
@@ -81,13 +88,16 @@ var Board = React.createClass({
   },
   render: function() {
     return(
-      <table id="board" className="table table-bordered">
-        <Header />
-        <tbody>
-          {Object.keys(this.state.projects).map(this.renderProject)}
-          <NewProject addProject={this.addProject} errors={this.state.errors.newProject} />
-        </tbody>
-      </table>
+      <div>
+        <Auth loginAs={this.loginAs} user={this.state.user} />
+        <table id="board" className="table table-bordered">
+          <Header />
+          <tbody>
+            {Object.keys(this.state.projects).map(this.renderProject)}
+            <NewProject addProject={this.addProject} errors={this.state.errors.newProject} />
+          </tbody>
+        </table>
+      </div>
     )
   }
 })
