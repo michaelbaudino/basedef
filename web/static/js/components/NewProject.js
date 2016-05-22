@@ -1,6 +1,6 @@
 import React from "react"
 
-var AddProject = React.createClass({
+var NewProject = React.createClass({
   addProject: function(event) {
     event.preventDefault()
     this.props.addProject(this.refs.projectName.value)
@@ -29,4 +29,4 @@ var AddProject = React.createClass({
   }
 })
 
-export default AddProject
+export default NewProject

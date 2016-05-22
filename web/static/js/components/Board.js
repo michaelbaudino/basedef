@@ -1,7 +1,7 @@
 import React      from "react"
 import Header     from "./Header"
 import Project    from "./Project"
-import AddProject from "./AddProject"
+import NewProject from "./NewProject"
 
 import {Socket} from "phoenix"
 
@@ -72,7 +72,7 @@ var Board = React.createClass({
         <Header />
         <tbody>
           {Object.keys(this.state.projects).map(this.renderProject)}
-          <AddProject addProject={this.addProject} />
+          <NewProject addProject={this.addProject} />
         </tbody>
       </table>
     )
