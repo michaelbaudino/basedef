@@ -26,7 +26,7 @@ import Board from "./components/Board"
 new Clipboard("#share-url-btn")
 
 // Initialize board component
-let boardPlaceholder = document.getElementById("react-board")
+let boardPlaceholder = document.getElementById("board-wrapper")
 if (boardPlaceholder) {
   ReactDOM.render(
     <Board id={boardPlaceholder.getAttribute("data-board-id")} />,
