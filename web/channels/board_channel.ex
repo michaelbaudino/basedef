@@ -17,7 +17,7 @@ defmodule Basedef.BoardChannel do
     case Repo.insert(changeset) do
       {:ok, project} ->
         broadcast! socket, "project_added", %{id: project.id, name: project.name}
-        {:noreply, socket}
+        {:reply, {:ok, %{}}, socket}
       {:error, changeset} ->
         errors = changeset.errors |> Enum.map(&extrapolate_error_message/1) |> Enum.into(%{})
         {:reply, {:error, errors}, socket}

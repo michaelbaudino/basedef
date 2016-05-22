@@ -5,16 +5,13 @@ import NewProject from "./NewProject"
 
 import {Socket} from "phoenix"
 
-// TODO:
-//   * error management at projects load
-//   * error management at project creation
-
 var Board = React.createClass({
   getInitialState: function() {
     return {
       projects: {},
-      socket: new Socket("/socket", {params: {token: window.userToken}}),
-      channel: null
+      errors:   {},
+      socket:   new Socket("/socket", {params: {token: window.userToken}}),
+      channel:  null
     }
   },
   getProjects: function() {
@@ -30,13 +27,29 @@ var Board = React.createClass({
         console.log("Projects loaded successfully", reply)
       })
   },
-  addProject: function(name) {
+  addProject: function(name, sourceForm) {
     this.state.channel.push("create_project", {name: name})
-      .receive("error", errors => { this.displayErrors(errors) })
+      .receive("error", errors => {
+        this.state.errors.newProject = this.parseErrors(errors)
+        this.setState({errors: this.state.errors})
+      })
+      .receive("ok", reply => {
+        delete this.state.errors.newProject
+        this.setState({errors: this.state.errors})
+        sourceForm.reset()
+      })
   },
   deleteProject: function(name) {
     this.state.channel.push("delete_project", {name: name})
       .receive("error", errors => { this.displayErrors(errors) })
+  },
+  parseErrors: function(errors) {
+    let human_errors = new Array
+    for (let field of Object.keys(errors)) {
+      if (field == "name_board_id") { field = "name" }
+      human_errors.push(`Project ${field} ${errors[field]}`)
+    }
+    return human_errors.join(", ")
   },
   componentDidMount: function() {
     this.state.socket.connect()
@@ -72,7 +85,7 @@ var Board = React.createClass({
         <Header />
         <tbody>
           {Object.keys(this.state.projects).map(this.renderProject)}
-          <NewProject addProject={this.addProject} />
+          <NewProject addProject={this.addProject} errors={this.state.errors.newProject} />
         </tbody>
       </table>
     )
