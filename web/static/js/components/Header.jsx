@@ -1,7 +1,7 @@
 import React from "react"
 
-var Header = React.createClass({
-  render: function() {
+const Header = React.createClass({
+  render() {
     return(
       <thead>
         <tr>

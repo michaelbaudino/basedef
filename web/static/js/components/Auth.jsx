@@ -1,12 +1,13 @@
 import React from "react"
 import Modal from "react-modal"
 
-var Auth = React.createClass({
-  logIn: function(event) {
+const Auth = React.createClass({
+  logIn(event) {
     event.preventDefault()
     this.props.loginAs(this.refs.userName.value)
   },
-  render: function() {
+
+  render() {
     let modalStyle = {
       content: {
         top:    "5em",

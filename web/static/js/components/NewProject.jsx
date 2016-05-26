@@ -1,23 +1,26 @@
 import React from "react"
 
-var NewProject = React.createClass({
-  addProject: function(event) {
+const NewProject = React.createClass({
+  addProject(event) {
     event.preventDefault()
     this.props.addProject(this.refs.projectName.value, this.refs.addProjectForm)
   },
-  renderErrors: function() {
+
+  renderErrors() {
     if (this.props.errors) {
       return this.props.errors
     }
   },
-  formGroupClasses: function() {
+
+  formGroupClasses() {
     if (this.props.errors) {
       return "form-group has-error"
     } else {
       return "form-group"
     }
   },
-  render: function() {
+
+  render() {
     return(
       <tr className="new-project-row">
         <td colSpan="8">

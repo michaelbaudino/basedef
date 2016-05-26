@@ -1,10 +1,8 @@
 import React from "react"
 
-var Cell = React.createClass({
-  render: function() {
-    return (
-      <td className="cell"></td>
-    )
+const Cell = React.createClass({
+  render() {
+    return <td className="cell"></td>
   }
 })
 

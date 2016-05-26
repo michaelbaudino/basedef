@@ -6,8 +6,8 @@ import Auth       from "./Auth"
 
 import {Socket} from "phoenix"
 
-var Board = React.createClass({
-  getInitialState: function() {
+const Board = React.createClass({
+  getInitialState() {
     return {
       user:     null,
       projects: {},
@@ -16,49 +16,12 @@ var Board = React.createClass({
       channel:  null
     }
   },
-  getProjects: function() {
-    this.state.channel.push("list_projects")
-      .receive("error", reply => { console.log("ERROR: Could not load projects", reply) })
-      .receive("ok",    reply => {
-        this.setState({
-          projects: reply.  projects.reduce(function(projects, project) {
-            projects[project.id] = project
-            return projects
-          }, {})
-        })
-        console.log("Projects loaded successfully", reply)
-      })
+
+  componentDidMount() {
+    this.connectToChannel()
   },
-  addProject: function(name, sourceForm) {
-    this.state.channel.push("create_project", {name: name})
-      .receive("error", errors => {
-        this.state.errors.newProject = this.parseErrors(errors)
-        this.setState({errors: this.state.errors})
-      })
-      .receive("ok", reply => {
-        delete this.state.errors.newProject
-        this.setState({errors: this.state.errors})
-        sourceForm.reset()
-      })
-  },
-  deleteProject: function(name) {
-    this.state.channel.push("delete_project", {name: name})
-      .receive("error", errors => { this.displayErrors(errors) })
-  },
-  loginAs: function(name) {
-    console.log("Logged in as " + name)
-    this.state.user = {name: name}
-    this.setState({user: this.state.user})
-  },
-  parseErrors: function(errors) {
-    let human_errors = new Array
-    for (let field of Object.keys(errors)) {
-      if (field == "name_board_id") { field = "name" }
-      human_errors.push(`Project ${field} ${errors[field]}`)
-    }
-    return human_errors.join(", ")
-  },
-  componentDidMount: function() {
+
+  connectToChannel() {
     this.state.socket.connect()
     this.setState(
       {channel: this.state.socket.channel("boards:" + this.props.id, {})},
@@ -83,11 +46,60 @@ var Board = React.createClass({
       }
     )
   },
-  renderProject: function(id) {
-    return(<Project key={id} name={this.state.projects[id].name} deleteProject={this.deleteProject} />)
+
+  getProjects() {
+    this.state.channel.push("list_projects")
+      .receive("error", reply => { console.log("ERROR: Could not load projects", reply) })
+      .receive("ok",    reply => {
+        this.setState({
+          projects: reply.  projects.reduce(function(projects, project) {
+            projects[project.id] = project
+            return projects
+          }, {})
+        })
+        console.log("Projects loaded successfully", reply)
+      })
   },
-  render: function() {
-    return(
+
+  addProject(name, sourceForm) {
+    this.state.channel.push("create_project", {name: name})
+      .receive("error", errors => {
+        this.state.errors.newProject = this.parseErrors(errors)
+        this.setState({errors: this.state.errors})
+      })
+      .receive("ok", reply => {
+        delete this.state.errors.newProject
+        this.setState({errors: this.state.errors})
+        sourceForm.reset()
+      })
+  },
+
+  deleteProject(name) {
+    this.state.channel.push("delete_project", {name: name})
+      .receive("error", errors => { this.displayErrors(errors) })
+  },
+
+  loginAs(name) {
+    console.log("Logged in as " + name)
+    this.state.user = {name: name}
+    this.setState({user: this.state.user})
+  },
+
+  parseErrors(errors) {
+    let human_errors = new Array
+    for (let field of Object.keys(errors)) {
+      if (field == "name_board_id") { field = "name" }
+      human_errors.push(`Project ${field} ${errors[field]}`)
+    }
+    return human_errors.join(", ")
+  },
+
+  renderProject(id) {
+    return <Project key={id} name={this.state.projects[id].name} deleteProject={this.deleteProject} />
+  },
+
+  render() {
+    return (
       <div>
         <Auth loginAs={this.loginAs} user={this.state.user} />
         <table id="board" className="table table-bordered">
