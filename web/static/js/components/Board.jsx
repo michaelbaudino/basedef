@@ -1,10 +1,11 @@
-import React      from "react"
+import { Socket, Presence } from "phoenix"
+
+import React from "react"
+
 import Header     from "./Header"
 import Project    from "./Project"
 import NewProject from "./NewProject"
 import Auth       from "./Auth"
-
-import {Socket} from "phoenix"
 
 const Board = React.createClass({
   getInitialState() {
@@ -13,7 +14,8 @@ const Board = React.createClass({
       projects: {},
       errors:   {},
       socket:   new Socket("/socket", {params: {token: window.userToken}}),
-      channel:  null
+      channel:  null,
+      users:    {}
     }
   },
 
@@ -26,13 +28,6 @@ const Board = React.createClass({
     this.setState(
       {channel: this.state.socket.channel("boards:" + this.props.id, {})},
       function() {
-        this.state.channel.join()
-          .receive("error", reply => { console.log("ERROR: Unable to join channel", reply) })
-          .receive("ok",    reply => {
-            console.log("Joined channel successfully", reply)
-            this.getProjects()
-          })
-
         this.state.channel.on("project_added", payload => {
           this.state.projects[payload.id] = {"name": payload.name}
           this.setState({"projects": this.state.projects})
@@ -43,6 +38,23 @@ const Board = React.createClass({
           this.setState({"projects": this.state.projects})
           console.log("Project deleted", payload)
         })
+        this.state.channel.on("presence_state", payload => {
+          console.log("Presence state", payload)
+          Presence.syncState(this.state.users, payload)
+          this.setState({users: this.state.users})
+        })
+        this.state.channel.on("presence_diff", payload => {
+          console.log("Presence diff", payload)
+          Presence.syncDiff(this.state.users, payload)
+          this.setState({users: this.state.users})
+        })
+
+        this.state.channel.join()
+          .receive("error", reply => { console.log("ERROR: Unable to join channel", reply) })
+          .receive("ok",    reply => {
+            console.log("Joined channel successfully", reply)
+            this.getProjects()
+          })
       }
     )
   },
@@ -76,13 +88,17 @@ const Board = React.createClass({
 
   deleteProject(name) {
     this.state.channel.push("delete_project", {name: name})
-      .receive("error", errors => { this.displayErrors(errors) })
+      .receive("error", errors => { console.log("ERROR: ", errors) })
   },
 
   loginAs(name) {
     console.log("Logged in as " + name)
-    this.state.user = {name: name}
-    this.setState({user: this.state.user})
+    this.state.channel.push("add_user", {name: name})
+      .receive("error", errors => { console.log("ERROR: ", errors) })
+      .receive("ok",    reply  => {
+        this.state.user = {name: name}
+        this.setState({user: this.state.user})
+      })
   },
 
   parseErrors(errors) {

@@ -12,8 +12,8 @@ config :basedef, Basedef.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    node: ["node_modules/brunch/bin/brunch", "watch", "--stdin"],
-    node: ["node_modules/webpack/bin/webpack.js", "--watch", "--color"]
+    node: ["node_modules/brunch/bin/brunch", "watch", "--stdin", cd: Path.expand("../", __DIR__)],
+    node: ["node_modules/webpack/bin/webpack.js", "--watch", "--color", cd: Path.expand("../", __DIR__)]
   ]
 
 # Watch static and templates for browser reloading.
