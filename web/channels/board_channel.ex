@@ -28,7 +28,7 @@ defmodule Basedef.BoardChannel do
     "boards:" <> board_id = socket.topic
     project = Repo.get_by(Project, %{board_id: board_id, name: name})
     case Repo.delete(project) do
-      {:ok, model} ->
+      {:ok, project} ->
         broadcast! socket, "project_deleted", %{id: project.id}
         {:reply, {:ok, %{}}, socket}
       {:error, changeset} ->
