@@ -16,13 +16,18 @@ const Board = React.createClass({
       socket:         new Socket("/socket", {params: {token: window.userToken}}),
       channel:        null,
       currentUser:    undefined,
-      connectedUsers: {},
-      localStorageKeys: {username: "basedef-board-" + this.props.id + "-username"}
+      connectedUsers: {}
+    }
+  },
+
+  getDefaultProps() {
+    return {
+      userNameKey: "basedef-username"
     }
   },
 
   componentDidMount() {
-    let saved_username = localStorage.getItem(this.state.localStorageKeys.username)
+    let saved_username = localStorage.getItem(this.props.userNameKey)
     if (saved_username) {
       this.logIn(saved_username)
     } else {
@@ -104,7 +109,7 @@ const Board = React.createClass({
       this.getProjects()
       this.state.currentUser = {name: name}
       this.setState({currentUser: this.state.currentUser})
-      localStorage.setItem(this.state.localStorageKeys.username, name)
+      localStorage.setItem(this.props.userNameKey, name)
       console.log("Logged in as " + name)
     })
   },
@@ -113,7 +118,7 @@ const Board = React.createClass({
     this.state.channel.leave()
       .receive("error", errors => { console.log("ERROR: ", errors) })
       .receive("ok",    reply  => {
-        delete localStorage[this.state.localStorageKeys.username]
+        delete localStorage[this.props.userNameKey]
         this.setState({currentUser: null})
         console.log("Logged out")
       })
