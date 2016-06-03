@@ -7,17 +7,17 @@ defmodule Basedef.BoardChannel do
   alias Basedef.Board
   alias Basedef.Project
 
-  def join("boards:" <> _private_room_id, _message, socket) do
-    {:ok, socket}
+  def join("boards:" <> _private_room_id, message, socket) do
+    send(self, :after_join)
+    {:ok, assign(socket, :user_name, message["user_name"])}
   end
 
-  def handle_in("add_user", %{"name" => user_name}, socket) do
-    socket = assign(socket, :user_name, user_name)
+  def handle_info(:after_join, socket) do
+    push socket, "presence_state", UserPresence.list(socket)
     {:ok, _} = UserPresence.track(socket, socket.assigns.user_name, %{
       online_at: inspect(System.system_time(:seconds))
     })
-    push socket, "presence_state", UserPresence.list(socket)
-    {:reply, {:ok, %{name: user_name}}, socket}
+    {:noreply, socket}
   end
 
   def handle_in("create_project", %{"name" => name}, socket) do
