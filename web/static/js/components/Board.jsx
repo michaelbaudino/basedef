@@ -6,6 +6,7 @@ import Header     from "./Header"
 import Project    from "./Project"
 import NewProject from "./NewProject"
 import Auth       from "./Auth"
+import UserList   from "./UserList"
 
 const Board = React.createClass({
   getInitialState() {
@@ -39,12 +40,10 @@ const Board = React.createClass({
           console.log("Project deleted", payload)
         })
         this.state.channel.on("presence_state", payload => {
-          console.log("Presence state", payload)
           Presence.syncState(this.state.users, payload)
           this.setState({users: this.state.users})
         })
         this.state.channel.on("presence_diff", payload => {
-          console.log("Presence diff", payload)
           Presence.syncDiff(this.state.users, payload)
           this.setState({users: this.state.users})
         })
@@ -125,6 +124,11 @@ const Board = React.createClass({
             <NewProject addProject={this.addProject} errors={this.state.errors.newProject} />
           </tbody>
         </table>
+        <div className="row">
+          <div className="col-xs-4">
+            <UserList users={this.state.users} />
+          </div>
+        </div>
       </div>
     )
   }
