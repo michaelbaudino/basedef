@@ -2,9 +2,9 @@ import React from "react"
 import Modal from "react-modal"
 
 const Auth = React.createClass({
-  logIn(event) {
+  handleSubmit(event) {
     event.preventDefault()
-    this.props.loginAs(this.refs.userName.value)
+    this.props.logIn(this.refs.userName.value)
   },
 
   render() {
@@ -21,9 +21,9 @@ const Auth = React.createClass({
       }
     }
     return (
-      <Modal isOpen={this.props.user === null} style={modalStyle}>
+      <Modal isOpen={this.props.currentUser === null} style={modalStyle}>
         <h2>Happy Friday!</h2>
-        <form onSubmit={this.logIn}>
+        <form onSubmit={this.handleSubmit}>
           <label>Log me in as</label>
           <input placeholder="What's your name ?" ref="userName" />
           <button className="btn btn-success" type="submit">OK</button>

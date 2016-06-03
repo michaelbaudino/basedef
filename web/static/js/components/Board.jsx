@@ -1,48 +1,73 @@
-import React      from "react"
+import { Socket, Presence } from "phoenix"
+
+import React from "react"
+
 import Header     from "./Header"
 import Project    from "./Project"
 import NewProject from "./NewProject"
 import Auth       from "./Auth"
-
-import {Socket} from "phoenix"
+import UserList   from "./UserList"
 
 const Board = React.createClass({
   getInitialState() {
     return {
-      user:     null,
-      projects: {},
-      errors:   {},
-      socket:   new Socket("/socket", {params: {token: window.userToken}}),
-      channel:  null
+      projects:       {},
+      errors:         {},
+      socket:         new Socket("/socket", {params: {token: window.userToken}}),
+      channel:        null,
+      currentUser:    undefined,
+      connectedUsers: {}
+    }
+  },
+
+  getDefaultProps() {
+    return {
+      userNameKey: "basedef-username"
     }
   },
 
   componentDidMount() {
-    this.connectToChannel()
+    let saved_username = localStorage.getItem(this.props.userNameKey)
+    if (saved_username) {
+      this.logIn(saved_username)
+    } else {
+      this.setState({currentUser: null})
+    }
   },
 
-  connectToChannel() {
+  createChannelEventHandlers() {
+    this.state.channel.on("project_added", payload => {
+      this.state.projects[payload.id] = {"name": payload.name}
+      this.setState({"projects": this.state.projects})
+      console.log("Project added", payload)
+    })
+    this.state.channel.on("project_deleted", payload => {
+      delete this.state.projects[payload.id]
+      this.setState({"projects": this.state.projects})
+      console.log("Project deleted", payload)
+    })
+    this.state.channel.on("presence_state", payload => {
+      Presence.syncState(this.state.connectedUsers, payload)
+      this.setState({connectedUsers: this.state.connectedUsers})
+    })
+    this.state.channel.on("presence_diff", payload => {
+      Presence.syncDiff(this.state.connectedUsers, payload)
+      this.setState({connectedUsers: this.state.connectedUsers})
+    })
+  },
+
+  connectToChannel(user_name, afterJoinCallback) {
     this.state.socket.connect()
     this.setState(
-      {channel: this.state.socket.channel("boards:" + this.props.id, {})},
+      {channel: this.state.socket.channel("boards:" + this.props.id, {user_name: user_name})},
       function() {
+        this.createChannelEventHandlers()
         this.state.channel.join()
           .receive("error", reply => { console.log("ERROR: Unable to join channel", reply) })
           .receive("ok",    reply => {
             console.log("Joined channel successfully", reply)
-            this.getProjects()
+            afterJoinCallback()
           })
-
-        this.state.channel.on("project_added", payload => {
-          this.state.projects[payload.id] = {"name": payload.name}
-          this.setState({"projects": this.state.projects})
-          console.log("Project added", payload)
-        })
-        this.state.channel.on("project_deleted", payload => {
-          delete this.state.projects[payload.id]
-          this.setState({"projects": this.state.projects})
-          console.log("Project deleted", payload)
-        })
       }
     )
   },
@@ -52,7 +77,7 @@ const Board = React.createClass({
       .receive("error", reply => { console.log("ERROR: Could not load projects", reply) })
       .receive("ok",    reply => {
         this.setState({
-          projects: reply.  projects.reduce(function(projects, project) {
+          projects: reply.projects.reduce(function(projects, project) {
             projects[project.id] = project
             return projects
           }, {})
@@ -76,13 +101,27 @@ const Board = React.createClass({
 
   deleteProject(name) {
     this.state.channel.push("delete_project", {name: name})
-      .receive("error", errors => { this.displayErrors(errors) })
+      .receive("error", errors => { console.log("ERROR: ", errors) })
   },
 
-  loginAs(name) {
-    console.log("Logged in as " + name)
-    this.state.user = {name: name}
-    this.setState({user: this.state.user})
+  logIn(name) {
+    this.connectToChannel(name, () => {
+      this.getProjects()
+      this.state.currentUser = {name: name}
+      this.setState({currentUser: this.state.currentUser})
+      localStorage.setItem(this.props.userNameKey, name)
+      console.log("Logged in as " + name)
+    })
+  },
+
+  logOut() {
+    this.state.channel.leave()
+      .receive("error", errors => { console.log("ERROR: ", errors) })
+      .receive("ok",    reply  => {
+        delete localStorage[this.props.userNameKey]
+        this.setState({currentUser: null})
+        console.log("Logged out")
+      })
   },
 
   parseErrors(errors) {
@@ -101,7 +140,7 @@ const Board = React.createClass({
   render() {
     return (
       <div>
-        <Auth loginAs={this.loginAs} user={this.state.user} />
+        <Auth logIn={this.logIn} currentUser={this.state.currentUser} />
         <table id="board" className="table table-bordered">
           <Header />
           <tbody>
@@ -109,6 +148,11 @@ const Board = React.createClass({
             <NewProject addProject={this.addProject} errors={this.state.errors.newProject} />
           </tbody>
         </table>
+        <div className="row">
+          <div className="col-xs-4">
+            <UserList connectedUsers={this.state.connectedUsers} currentUser={this.state.currentUser} logOut={this.logOut} />
+          </div>
+        </div>
       </div>
     )
   }

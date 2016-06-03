@@ -2,12 +2,22 @@ defmodule Basedef.BoardChannel do
   use Phoenix.Channel
   import Ecto.Query
 
+  alias Basedef.UserPresence
   alias Basedef.Repo
   alias Basedef.Board
   alias Basedef.Project
 
-  def join("boards:" <> _private_room_id, _message, socket) do
-    {:ok, socket}
+  def join("boards:" <> _private_room_id, message, socket) do
+    send(self, :after_join)
+    {:ok, assign(socket, :user_name, message["user_name"])}
+  end
+
+  def handle_info(:after_join, socket) do
+    push socket, "presence_state", UserPresence.list(socket)
+    {:ok, _} = UserPresence.track(socket, socket.assigns.user_name, %{
+      online_at: inspect(System.system_time(:seconds))
+    })
+    {:noreply, socket}
   end
 
   def handle_in("create_project", %{"name" => name}, socket) do
@@ -28,7 +38,7 @@ defmodule Basedef.BoardChannel do
     "boards:" <> board_id = socket.topic
     project = Repo.get_by(Project, %{board_id: board_id, name: name})
     case Repo.delete(project) do
-      {:ok, model} ->
+      {:ok, project} ->
         broadcast! socket, "project_deleted", %{id: project.id}
         {:reply, {:ok, %{}}, socket}
       {:error, changeset} ->

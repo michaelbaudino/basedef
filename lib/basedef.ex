@@ -11,6 +11,8 @@ defmodule Basedef do
       supervisor(Basedef.Endpoint, []),
       # Start the Ecto repository
       supervisor(Basedef.Repo, []),
+      # Start the users presence supervisor
+      supervisor(Basedef.UserPresence, []),
       # Here you could define other workers and supervisors as children
       # worker(Basedef.Worker, [arg1, arg2, arg3]),
     ]

@@ -36,5 +36,27 @@
   .cell:hover
     background-color: $flat-gray-light
 
+.user-list
+  ul
+    list-style: none
+    li
+      &::before
+        content: "• "
+        font-size: 1.3em
+        color: $flat-green
+      &.current-user::before
+        color: $flat-yellow
+      .logOut
+        float: right
+        margin-right: 20px
+        cursor: pointer
+        color: transparent
+        transition: color ease-out 0.7s
+      &:hover
+        .logOut
+          color: rgba($flat-red, 0.4)
+          &:hover
+            color: $flat-red
+
 #share-url
   background-color: white
