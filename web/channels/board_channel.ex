@@ -7,7 +7,7 @@ defmodule Basedef.BoardChannel do
   alias Basedef.Board
   alias Basedef.Project
 
-  def join("boards:" <> _private_room_id, params, socket) do
+  def join("boards:" <> _board_id, params, socket) do
     send(self, :after_join)
     {:ok, assign(socket, :user_name, params["user_name"])}
   end
