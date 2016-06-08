@@ -2,7 +2,7 @@
 
 This is an online, collaborative BASEDEF contribution matrix to replace the physical whiteboard in the methodology described by [Joe Nelson](https://github.com/begriffs) in [Making 20% Time Work](http://begriffs.com/posts/2016-01-29-making-twenty-percent-time-work.html) to allow remote teams to work with this methodology too.
 
-:warning: This is a project to learn [Phoenix](http://www.phoenixframework.org) and [React](https://facebook.github.io/react), don't expect too much...
+:warning: This is a project to learn [Phoenix](http://www.phoenixframework.org), [React](https://facebook.github.io/react) and [Redux](http://redux.js.org) don't expect too much...
 
 ## Run the app
 
