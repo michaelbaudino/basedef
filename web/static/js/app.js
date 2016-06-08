@@ -12,24 +12,25 @@
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
 import "phoenix_html"
-import Clipboard from "clipboard"
-import React     from "react"
-import ReactDOM  from "react-dom"
+import Clipboard    from "clipboard"
+import React        from "react"
+import ReactDOM     from "react-dom"
+import { Provider } from "react-redux"
 
-// Import local files
-//
-// Local files can be imported directly using relative
-// paths "./socket" or full ones "web/static/js/socket".
-import Board from "./components/Board"
+import store from "./store"
+
+import App from "./components/App"
 
 // Initialize clipboard
 new Clipboard("#share-url-btn")
 
-// Initialize board component
-let boardPlaceholder = document.getElementById("board-wrapper")
-if (boardPlaceholder) {
+// Initialize React/Redux app
+let reduxAppPlaceholder = document.getElementById("redux-app-placeholder")
+if (reduxAppPlaceholder) {
   ReactDOM.render(
-    <Board id={boardPlaceholder.getAttribute("data-board-id")} />,
-    boardPlaceholder
+    <Provider store={store(reduxAppPlaceholder.getAttribute("data-board-id"))}>
+      <App />
+    </Provider>,
+    reduxAppPlaceholder
   )
 }

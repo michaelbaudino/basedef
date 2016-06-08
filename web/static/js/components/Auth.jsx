@@ -1,10 +1,23 @@
 import React from "react"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
 import Modal from "react-modal"
 
+import { logIn, logOut } from "../actions/actionsCreators"
+
 const Auth = React.createClass({
+  componentDidMount() {
+    let savedUsername = localStorage.getItem("basedef-username")
+    if (savedUsername) {
+      this.props.logIn(this.props.socket, this.props.boardId, savedUsername)
+    } else {
+      this.props.logOut()
+    }
+  },
+
   handleSubmit(event) {
     event.preventDefault()
-    this.props.logIn(this.refs.userName.value)
+    this.props.logIn(this.props.socket, this.props.boardId, this.refs.userName.value)
   },
 
   render() {
@@ -33,4 +46,16 @@ const Auth = React.createClass({
   }
 })
 
-export default Auth
+let mapStateToProps = (state) => {
+  return {
+    socket:      state.net.socket,
+    boardId:     state.net.boardId,
+    currentUser: state.auth.currentUser
+  }
+}
+
+let mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ logIn, logOut }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth)

@@ -1,6 +1,7 @@
 defmodule Basedef.BoardChannel do
   use Phoenix.Channel
   import Ecto.Query
+  import Ecto.Changeset
 
   alias Basedef.UserPresence
   alias Basedef.Repo
@@ -26,24 +27,21 @@ defmodule Basedef.BoardChannel do
     changeset = Project.changeset(%Project{}, %{name: name, board_id: board.id})
     case Repo.insert(changeset) do
       {:ok, project} ->
-        broadcast! socket, "project_added", %{id: project.id, name: project.name}
-        {:reply, {:ok, %{}}, socket}
+        broadcast! socket, "project_created", project
+        {:reply, {:ok, project |> Map.take([:id, :name])}, socket}
       {:error, changeset} ->
-        errors = changeset.errors |> Enum.map(&extrapolate_error_message/1) |> Enum.into(%{})
-        {:reply, {:error, errors}, socket}
+        {:reply, {:error, traverse_errors(changeset, &translate_errors/1)}, socket}
     end
   end
 
-  def handle_in("delete_project", %{"name" => name}, socket) do
-    "boards:" <> board_id = socket.topic
-    project = Repo.get_by(Project, %{board_id: board_id, name: name})
+  def handle_in("delete_project", %{"id" => id}, socket) do
+    project = Repo.get!(Project, id)
     case Repo.delete(project) do
       {:ok, project} ->
-        broadcast! socket, "project_deleted", %{id: project.id}
-        {:reply, {:ok, %{}}, socket}
+        broadcast! socket, "project_deleted", %{id: project.id, name: project.name}
+        {:reply, {:ok, project |> Map.take([:id, :name])}, socket}
       {:error, changeset} ->
-        errors = changeset.errors |> Enum.map(&extrapolate_error_message/1) |> Enum.into(%{})
-        {:reply, {:error, errors}, socket}
+        {:reply, {:error, traverse_errors(changeset, &translate_errors/1)}, socket}
     end
   end
 
@@ -53,22 +51,13 @@ defmodule Basedef.BoardChannel do
     {:reply, {:ok, %{projects: projects}}, socket}
   end
 
-  intercept ["project_added"]
+  intercept ["project_created"]
 
-  def handle_out("project_added", %{id: id, name: name}, socket) do
-    push socket, "project_added", %{id: id, name: name |> Phoenix.HTML.html_escape |> Phoenix.HTML.safe_to_string}
+  def handle_out("project_created", %{id: id, name: name}, socket) do
+    push socket, "project_created", %{id: id, name: name |> Phoenix.HTML.html_escape |> Phoenix.HTML.safe_to_string}
     {:noreply, socket}
   end
 
-  defp extrapolate_error_message({field, reason}) when is_tuple(reason) do
-    {message, values} = reason
-    extrapolated_reason = Enum.reduce values, message, fn {k, v}, acc ->
-      String.replace(acc, "%{#{k}}", to_string(v))
-    end
-    {field, extrapolated_reason}
-  end
-
-  defp extrapolate_error_message({field, reason}) do
-    {field, reason}
-  end
+  defp translate_errors({msg, opts}), do: msg |> String.replace("%{count}", to_string(opts[:count]))
+  defp translate_errors(msg),         do: msg
 end

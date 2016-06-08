@@ -1,9 +1,9 @@
 import React from "react"
 
-const Cell = React.createClass({
+const ReduxCell = React.createClass({
   render() {
     return <td className="cell"></td>
   }
 })
 
-export default Cell
+export default ReduxCell
