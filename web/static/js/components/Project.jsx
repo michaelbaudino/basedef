@@ -9,7 +9,9 @@ import Cell  from "./Cell"
 const Project = React.createClass({
   handleDeleteClick(event) {
     event.preventDefault()
-    this.props.deleteProject(this.props.channel, this.props.project)
+    if (confirm("Do you really want to delete project \"" + this.props.project.name + "\"?")) {
+      this.props.deleteProject(this.props.channel, this.props.project)
+    }
   },
 
   render() {
