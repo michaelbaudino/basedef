@@ -9,14 +9,18 @@ defmodule Basedef.BoardChannel do
   alias Basedef.Project
 
   def join("boards:" <> _board_id, params, socket) do
-    send(self, :after_join)
-    {:ok, assign(socket, :user_name, params["user_name"])}
+    if Map.has_key?(UserPresence.list(socket), params["user_name"]) do
+      {:error, %{username: ["is already in use"]}}
+    else
+      send(self, :after_join)
+      {:ok, assign(socket, :user_name, params["user_name"])}
+    end
   end
 
   def handle_info(:after_join, socket) do
     push socket, "presence_state", UserPresence.list(socket)
     {:ok, _} = UserPresence.track(socket, socket.assigns.user_name, %{
-      online_at: inspect(System.system_time(:seconds))
+      logged_in_at: inspect(System.system_time(:seconds))
     })
     {:noreply, socket}
   end

@@ -23,6 +23,12 @@ export function deleteAlert(index) {
   }
 }
 
+export function resetAlerts() {
+  return {
+    type: "RESET_ALERTS"
+  }
+}
+
 export function setProjects(projects) {
   return {
     type: "SET_PROJECTS",
@@ -115,8 +121,12 @@ export function logIn(socket, boardId, username) {
     channel.on("project_created", project       => { dispatch(projectCreated(project)) })
     channel.on("project_deleted", project       => { dispatch(projectDeleted(project)) })
     channel.join()
-      .receive("error", errors => { dispatch(connectionFailed(errors)) })
-      .receive("ok",    reply  => {
+      .receive("error", errors => {
+        dispatch(connectionFailed(errors))
+        dispatch(addAlert(serverErrorsToAlertContent(errors, "authenticating"), "danger"))
+      })
+      .receive("ok", reply  => {
+        dispatch(resetAlerts())
         dispatch(connectionSucceeded(channel, reply))
         dispatch(getProjects(channel))
       })

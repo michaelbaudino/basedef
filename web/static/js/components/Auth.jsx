@@ -5,6 +5,8 @@ import Modal from "react-modal"
 
 import { logIn, logOut } from "../actions/actionsCreators"
 
+import Alerts from "./Alerts"
+
 const Auth = React.createClass({
   componentDidMount() {
     let savedUsername = localStorage.getItem("basedef-username")
@@ -18,6 +20,7 @@ const Auth = React.createClass({
   handleSubmit(event) {
     event.preventDefault()
     this.props.logIn(this.props.socket, this.props.boardId, this.refs.username.value)
+    this.refs.form.reset()
   },
 
   render() {
@@ -48,6 +51,7 @@ const Auth = React.createClass({
             </div>
           </form>
         </div>
+        <Alerts />
       </Modal>
     )
   }
