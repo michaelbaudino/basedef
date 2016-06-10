@@ -26,8 +26,10 @@ defmodule Basedef.ModelCase do
   end
 
   setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Basedef.Repo)
+
     unless tags[:async] do
-      Ecto.Adapters.SQL.restart_test_transaction(Basedef.Repo, [])
+      Ecto.Adapters.SQL.Sandbox.mode(Basedef.Repo, {:shared, self()})
     end
 
     :ok

@@ -5,6 +5,9 @@
 # is restricted to this project.
 use Mix.Config
 
+# General application configuration
+config :basedef, ecto_repos: [Basedef.Repo]
+
 # Configures the endpoint
 config :basedef, Basedef.Endpoint,
   url: [host: "localhost"],
