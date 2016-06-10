@@ -7,7 +7,7 @@ defmodule Basedef.ProjectTest do
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
-    changeset = Project.changeset(%Project{}, @valid_attrs)
+    changeset = Project.changeset(%Project{name: "test project", board_id: 42}, @valid_attrs)
     assert changeset.valid?
   end
 
