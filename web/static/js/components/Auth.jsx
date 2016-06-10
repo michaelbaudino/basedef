@@ -17,7 +17,7 @@ const Auth = React.createClass({
 
   handleSubmit(event) {
     event.preventDefault()
-    this.props.logIn(this.props.socket, this.props.boardId, this.refs.userName.value)
+    this.props.logIn(this.props.socket, this.props.boardId, this.refs.username.value)
   },
 
   render() {
@@ -35,12 +35,19 @@ const Auth = React.createClass({
     }
     return (
       <Modal isOpen={this.props.currentUser === null} style={modalStyle}>
-        <h2>Happy Friday!</h2>
-        <form onSubmit={this.handleSubmit}>
-          <label>Log me in as</label>
-          <input placeholder="What's your name ?" ref="userName" />
-          <button className="btn btn-success" type="submit">OK</button>
-        </form>
+        <div className="row auth-modal">
+          <h2>Happy Friday!</h2>
+          <form onSubmit={this.handleSubmit} ref="form">
+            <div className="col-xs-6 col-xs-offset-3">
+              <div className="input-group">
+                <input type="text" className="form-control" placeholder="What's your name?" ref="username" />
+                <span className="input-group-btn">
+                  <button className="btn btn-success" type="submit">Join!</button>
+                </span>
+              </div>
+            </div>
+          </form>
+        </div>
       </Modal>
     )
   }
